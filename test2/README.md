@@ -42,5 +42,19 @@ Oracle有一个开发者角色resource，可以创建表、过程、触发器等
 #### 操作最终截图如下：
 ![Image text](2-3.png)
 
+#### 查看数据库的使用情况
+以下样例查看表空间的数据库文件，以及每个文件的磁盘占用情况。
+####
+
+    SQL>SELECT tablespace_name,FILE_NAME,BYTES/1024/1024 MB,MAXBYTES/1024/1024 MAX_MB,autoextensible FROM dba_data_files  WHERE  tablespace_name='USERS';
+
+    SQL>SELECT a.tablespace_name "表空间名",Total/1024/1024 "大小MB",free/1024/1024 "剩余MB",( total - free )/1024/1024 "使用MB",Round(( total - free )/ total,4)* 100 "使用率%"from (SELECT tablespace_name,Sum(bytes)free
+        FROM   dba_free_space group  BY tablespace_name)a,
+       (SELECT tablespace_name,Sum(bytes)total FROM dba_data_files
+        group  BY tablespace_name)b
+    where  a.tablespace_name = b.tablespace_name;
+#### 操作截图如下：
+![Image text](2-4.png)
+![Image text](2-5.png)
 ### 实验总结
  通过这次实验，我掌握了角色的创建以及用户创建和角色分配、表空间分配的具体操作语句，同时还对对象创建及共享的设置和权限维护有了一定的掌握，再接再厉啊。
